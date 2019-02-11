@@ -1,5 +1,7 @@
 /**
- * @author Gabriel <gpietrafesavieitez@danielcastelao.org>
+ * Gabriel P.
+ * CPR Daniel Castelao
+ * <gpietrafesavieitez@danielcastelao.org>
  */
 
 package boletin_22_1;
