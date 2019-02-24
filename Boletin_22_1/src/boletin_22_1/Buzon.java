@@ -7,10 +7,19 @@
 package boletin_22_1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Buzon {
     static ArrayList<Correo> listaCorreos = new ArrayList<>();
+    
+    static int numeroDeCorreos(){
+        return listaCorreos.size();
+    }
+    
+    static void añadir(Correo c){
+        listaCorreos.add(c);
+    }
     
     static int porLeer(){
         int c = 0;
@@ -22,75 +31,66 @@ public class Buzon {
         return c;
     }
     
-    static void añadir(Correo c){
-        listaCorreos.add(c);
-    }
-    
-    static String vistazo(){
-        String devolver = "\t[ INFO ] No hay mensajes nuevos.";
+    static String mostrarPrimerNoLeido(){
         for(Correo obx : listaCorreos){
             if(obx.isflagSinLeer()){
                 obx.flagSinLeer(false);
-                devolver = obx.toString();
-                break;
+                return "=> '" + obx.toString() + "'";
             }
         }
-        return devolver;
+        return "[ info ] No hay mensajes nuevos.";
     }
     
-    static String mostrar(int k){ // FALTA SETEAR A FALSE CUANDO SE MUESTRA EL CORREO
-        if(k < 0){
-            return "\t[ ERROR ] Valor no puede ser negativo.";
-        }else if(k > listaCorreos.size()){
-            return "\t[ AVISO ] No existe ningún correo en esa posición.";
-        }else{
-            return listaCorreos.get(k).toString();
-        }
+    static String mostrar(int k){
+        listaCorreos.get(k).flagSinLeer(false); // Hacemos constar de que se ha leido
+        return listaCorreos.get(k).toString(); // Devolvemos el contenido del correo
+    }
+    
+    static void eliminar(int k){
+        listaCorreos.remove(k);
     }
     
     public static void main(String[] args) {
         Scanner leer = new Scanner(System.in);
-        int input;
         String key = null;
-        listaCorreos.add(new Correo("Define a clase Buzon para xestionar unbuzon de correo",true));
-        listaCorreos.add(new Correo("Para representar o buzon de correo úsase un array de correos",true));
-        listaCorreos.add(new Correo("Define a clase Correo cos métodos que creas convenientes",true));
         do{
             try{
-                System.out.print("\n[ BUZÓN DE CORREOS ]\n\t1: Añadir\n\t2: Vistazo\n\t3: Mostrar\n\t4: Eliminar\n\t5: Salir (" + porLeer() + " mensaje(s) sin leer)\n\t$: ");
+                System.out.print("\n[ BUZÓN DE CORREOS ]: " + numeroDeCorreos() + " correo(s) en total.\n\t1: Añadir\n\t2: Vistazo\n\t3: Mostrar\n\t4: Eliminar\n\t5: Salir (" + porLeer() + " mensaje(s) sin leer)\n\t?: ");
                 key = leer.nextLine();
                 switch(key.toLowerCase()){
                     case "1":
                     case "añadir":
-                        System.out.print("\n[ AÑADIR ]\n\t- Redacte el contenido: ");
-                        key = leer.nextLine();
-                        añadir(new Correo(key,true));
+                        System.out.print("\n[ AÑADIR ]\n\t- Redacte el correo: ");
+                        añadir(new Correo(leer.nextLine(),true));
                         break;
                     case "2":
                     case "vistazo":
-                        System.out.println("\n[ VISTAZO ]\n" + vistazo());
+                        System.out.println("\n[ VISTAZO ]\n\t" + mostrarPrimerNoLeido());
                         break;
                     case "3":
-                        System.out.print("\n[ MOSTRAR ]\n\t- Introduzca la posición: ");
-                        System.out.println(mostrar(Integer.parseInt(leer.nextLine())));
+                        System.out.print("\n[ MOSTRAR ]\n\t- Introduzca la posición del correo a mostrar: ");
+                        System.out.println("\n\t=> '" + mostrar(Integer.parseInt(leer.nextLine()) - 1) + "'");
                         break;
                     case "4":
                     case "eliminar":
-                        System.out.println("\n[ ELIMINAR ]");
+                        System.out.print("\n[ ELIMINAR ]\n\t- Introduzca la posición del correo a eliminar: ");
+                        eliminar(Integer.parseInt(leer.nextLine() ) - 1);
                         break;
                     case "5":
                     case "salir":
                         System.exit(0);
                     default:
-                        System.out.println("\n\t[ ERROR ] Porfavor, seleccione una opción válida.");
+                        System.out.println("\n\t[ error ] Porfavor, seleccione una opción válida.");
                 }
             }catch(NullPointerException e1){
-                System.out.println("\n\t[ ERROR ] El valor no puede ser nulo.");
+                System.out.println("\n\t[ error ] El valor no puede ser nulo.");
             }catch(NumberFormatException e2){
-                System.out.println("\n\t[ ERROR ] El formato introducido no es correcto.");
+                System.out.println("\n\t[ error ] El formato introducido no es correcto.");
+            }catch(IndexOutOfBoundsException e3){
+                System.out.println("\n\t[ error ] No existe esa posición.");
             }catch(Exception e){
-                System.out.println("\n\t[ ERROR ] Ha ocurrido un error inesperado." + e.toString());
+                System.out.println("\n\t[ error ] Ha ocurrido un error inesperado.");
             }
-        }while(!key.equals("4") || !key.equalsIgnoreCase("salir"));
+        }while(!key.equals("5") || !key.equalsIgnoreCase("salir"));
     }
 }
